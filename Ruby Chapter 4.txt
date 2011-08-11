@@ -53,5 +53,223 @@ Array (Vetor)
            
 Containers - Hash    
 
-*       
+* Hashes, conhecidos também como mapas ou dicionários, são muito similares aos vetores, porém seus índices podem ser qualquer tipo de objeto.
+
+* Ao armazenar um valor em um hash é necessário passar 2 objetos: primeiramente é necessário passar um objeto para servir como chave única do valor que será armazenado, sendo o valor o segundo objeto passado.
+
+* Exemplo: h = {'oi' => 'hello', 2 => 'dois', 'adeus' -> 0}
+           h.length -> 3
+           h['oi'] -> 'hello'
+           h[99] = 98
+           h[99] -> 98
            
+* Mas nem tudo é perfeito. Embora sejam muito flexíveis no quesito armazenamento por meio das chaves, hashs não são ordenados como os vetores.
+
+Arrays e seus Métodos
+
+* Agora iremos abordar os métodos que a classe Array nos oferece. Inicialmente criamos uma lista de ingredientes que nada mais é do que um vetor:
+
+class ListaIngredientes
+    def initialize
+        @ingredientes = Array.new
+    end
+end
+
+* Criamos agora um método para adicionar ingredientes ao fim de nossa lista:
+
+class ListaIngredientes
+    def adiciona(ingrediente)
+        @ingredientes.push(ingrediente)
+        self                        # Retorna self, uma referencia ao objeto corrente ListaIngredientes
+    end
+end
+
+Arrays e seus Métodos
+
+* Precisamos agora criar 2 métodos, um para apagar o primeiro ingrediente de nossa lista, outro para apagar o último:
+
+class ListaIngredientes
+    def apaga_primeiro
+        @ingredientes.shift
+    end
+    def apaga_último
+        @ingredientes.pop
+    end
+end
+
+* Por último vamos criar o método [] que acessa elementos pelo index:
+
+class ListaIngredientes
+    def [](index)
+        @ingredientes[index]
+    end
+end
+
+Iteradores e Blocos
+
+* Uma das coisas mais importantes em Ruby são os Iteradores (Iterators) e Blocos. A linguagem encoraja que loops como "while" e "for" sejam cada vez menos utilizados, dando espaço aos iteradores.
+
+* Exemplo: class ListaIngredientes
+            def busca_nome(nome)
+                for i in 0...@ingredientes.length
+                    return @ingredientes[i] if nome == @ingredientes[i].nome
+                end
+                return nil
+            end
+           end
+           
+           # Podemos escrever de forma melhorada
+           
+           class ListaIngredientes
+            def busca_nome(nome)
+                @ingredientes.find {|ingrediente| nome = ingrediente.nome}
+            end
+           end
+           
+* Aqui, método find é um iterador que invoca um bloco de código repetidamente.
+
+Implementando um Iterador
+
+* Para fixar a aprendizagem sobre iteradores e sua importância, iremos muito em breve implementar um exemplo.
+
+* Primeiramente, em Ruby, um bloco é uma maneira de agrupar declarações e só aparece ao lado de uma chamada para método, exatamente na mesma linha do último parâmetro da chamada.
+
+* O conteudo do bloco fica de lado enquanto o método é executado. Dentro do método, ao se deparar com a expressão "yield", Ruby lembra do código dentro do bloco e o executa.
+
+* O próximo exemplo será a implementação da famosa série de Fibonacci utilizando iteradores. Mas dessa vez os blocos passarão parâmetros também.
+
+Implementando um Iterador
+
+def fib_até(max)
+    i1, i2 = 1, 1   # O mesmo que i1 =1 e i2 = 1
+    while i1 <= max
+        yield i1
+        i1, i2 = i2, i1+i2
+     end
+end
+
+fib_até(1000) {|f| print f, " "}
+
+# Resultado
+
+1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987
+
+* Nesse exemplo a varíavel f sempre recebe o valor de i1 passado por yield, e o imprime.
+
+Blocos
+
+* Se os parâmetros para um bloco são variáveis locais, elas serão usadas pelo bloco e seus valores poderão sofrer alterações.
+
+* Se uma variável aparece pela primeira vez dentro do bloco, ela será local apenas para o bloco. Caso contrário, ela será dividida entre o bloco e o ambiente.
+
+* Exemplo: a = [1,2]
+           b = 'oi'
+           a.each {|b| c = b * a[1]}
+           a                         ->   [1,2]
+           b                         ->   2
+           defined?(c)               ->   nil # defined? retorna nil se o argumento não está definido 
+           
+* Por fim, um bloco também pode retornar um valor para o método. O valor da última expressão avaliada dentro do bloco é passada de volta ao método como valor da expressão yield.
+
+Os Diferentes Iteradores
+
+* Each: Iterage com todos os elementos de uma coleção sucessivamente.
+
+['oi','tchau'].each {|i| puts i}
+
+# Resultado
+
+'oi'
+'tchau'
+
+* Collect: Pega cada elemento de uma coleção e os passa para um bloco. O resultado retornado pelo bloco é então utilizado para construção de um novo array.
+
+["A", "B"].collect {|i| i.succ} -> ["B", "C"]
+
+Os Diferentes Iteradores
+
+* Inject: Permite acumular um valor enquanto percorre elementos de uma coleção.
+
+[1,3,5,7].inject(0) {|sum, element| sum+element}  ->  16
+
+* Funcionamento: Na primeira vez em que o bloco associado é chamado, "sum" é associada ao parâmetro de inject, que corresponde ao valor 0 no exemplo anterior. "element" é então associado ao primeiro elemento da coleção.
+
+* Nas próximas iterações, "sum" assume o valor retornado pelo bloco na chamada anterior, no caso, "sum+element", enquanto "element" assumirá o valor do próximo elemento. O valor final é o último valor retornado pelo bloco.
+
+* É possível ainda iniciar um inject sem nenhum parâmetro. Nesse caso, "sum" assume o valor do primeiro elemento da coleção, enquanto "element" assume o valor do segundo, começando desse ponto a iteração.
+
+Blocos para Transações
+
+* Blocos NÃO são apenas utilizados junto com iteradores. É possível utilizar blocos como pedaços de código que devem rodar em alguma controle de transação.
+
+* Segue um exemplo da utilização de blocos para garantir que um arquivo esteja ciente que deve se fechar logo após a utilização de seus dados. Note que esse exemplo carece de tratamento de erro.
+
+class Arquivo
+    def Arquivo.abre_e_processa(*args)
+        a = Arquivo.open(*args)
+        yield a
+        a.close()
+    end
+end
+
+Arquivo.abre_e_processa("arquivo-teste.txt", "r") do |arquivo|
+    while linha = arquivo.gets
+        puts linha
+    end
+end
+
+# Resultado
+
+Linha 1
+Linha 2
+continua...
+
+* Nesse exemplo, foi utilizado "*args", que coleta os parâmetros atuais passados para o método dentro de um array chamado args. Dessa forma, Arquivo.open abre um arquivo com o nome passado em args. Ao chegar em "yield", "arquivo.gets" pega linha por linha do arquivo enquanto "puts" faz a impressão. Terminado o código no bloco, "a.close" se encarrega de fechar o arquivo.
+
+Blocos como Closures
+
+* Voltando para nossos ingredientes, suponhamos agora que precisemos criar ações para cada lista de ingredientes, por exemplo, a lista 1 deverá ser assada, enquanto a 2 deve ser picada e misturada na massa. Poderíamos implementar diversas classes para essas ações, mas isso daria um trabalho desnecessário. Do contrário podemos passar a ação desejada por meio de um bloco no momento da criação de um objeto generíco, digamos, PrepararIngredientes, que é uma subclasse de Cozinhar, que contém apenas o nome da ação, como por exemplo, assar, fritar, etc.. Exemplo:
+
+class PrepararIngredientes < Cozinhar
+    def initialize(nome, &ação)
+        super(nome)
+        @ação = ação
+    end
+    
+    def ação_escolhida
+        @ação.call(self)
+    end
+end
+
+assar = PrepararIngredientes.new("Assar") {lista_ingredientes.assar}
+fritar = PrepararIngredientes.new("Fritar") {lista_ingredientes.fritar}
+
+Blocos como Closures
+
+* Ao utilizar "&" como prefixo do último parâmetro de um método, Ruby procura por um bloco de código sempre que o método for chamado. Esse bloco é então convertido para um objeto da classe Proc e atribuído ao parâmetro. No exemplo anterior, a varíavel de instância "@ação" recebeu o objeto contido dentro do bloco.
+
+* Dessa forma, ao chamar o método "ação_escolhida", Ruby chama pelo método Proc#call no objeto para invocar o bloco. Assim, a ação desejada é executada.
+
+* Associado a um bloco, o que significa dizer, a um objeto Proc, está todo o contexto em que o bloco foi definido, desde o valor de "self", seus métodos, variáveis até constantes no escopo. Dessa forma, o bloco pode continuar utilizando toda essas informações originais mesmo que o ambiente em que elas tenham sido definidas tenha desaparecido. Isso se chama CLOSURE.
+
+* O próximo exemplo utilizará o método lambda, que converte um bloco para um objeto Proc.
+
+Blocos como Closures
+
+* Exemplo: def n_vezes(x)
+            return lambda {|n| x * n}
+           end
+           
+           p1 = n_vezes(23)
+           p1.call(3)  -> 69
+           p1.call(4)  -> 92
+           p2 = n_vezes("Oi")
+           p2.call(3)  -> "Oi Oi Oi"
+           
+* O método n_vezes retorna um objeto Proc que referencia o parâmetro do método, "x". Apesar do parâmetro estar fora de escopo no momento que o bloco é chamado, o mesmo continua acessível para o bloco.
+
+IMPORTANTE
+
+* Containers, blocos e iteradores são concenitos fundamentais em Ruby. Quanto mais e mais tempo você dedicar a linguagem, mais começará a perceber que seus códigos irão deixar de lado os tradicionais loops, enquanto que estarão repletos de iteradores.
+
+* Seu código estára mais compacto, fácil de ler e entender, além de extremamente façil de manter.
