@@ -1,0 +1,276 @@
+Objetos
+
+* O código a seguir irá gerar um objetos da classe Ingrediente sempre que for chamado:
+
+class Ingrediente
+    def initialize(nome, preço, sabor)  # Construtor
+        @nome = nome        #
+        @preço = preço      # variáveis de instância que recebem o valor passado pela chamada do método
+        @sabor = sabor      #
+    end
+end
+
+* "initialize" é o método responsável por criar um novo objeto sempre que o método .new é chamado, como por exemplo ingrediente = Ingrediente.new("Bacon", 1.99, "Salgado")
+
+* Em Ruby é possível inspessionar um objeto utilizando a chamada "objeto.inspect", que retorna algo do tipo:
+ingrediente.inspect -> #<Ingrediente:id_do_objeto @nome = "Bacon", @preço = 1,99m @sabor = "Salgado">
+
+Objetos e Classes
+
+* É possível adicionar métodos novos nas classes criadas para interagir com seus objetos. É possível ainda sobrescrever um método já existente para que forneça novas possibilidades.
+
+* Exemplo: ingrediente.to_s -> "#<Ingrediente:id_do_objeto>" # Método que transforma um objeto em String.
+Nesse caso só foi possível retornar o ID do objeto.
+Porém, se implementarmos o método "to_s" na classe "Ingrediente", poderemos obter novas funcionalidades:
+
+class Ingrediente
+    def to_s
+        "Ingrediente: #@nome, R$ #@preço. Sabor #@sabor" # Variáveis de instância não precisam de #{},
+    end                                                  # apenas #.
+end
+
+ingediente.to_s - > "Ingrediente: Bacon, R$ 1.99. Sabor salgado."
+
+Herança e Mensagens
+
+* Imaginamos agora que alguns ingredientes para nossas pizzas são importados. Precisamos então marcar o país de origem que vieram para dar aquele charme na pizza quando o cliente for escolher sua refeição. Podemos então definir uma nova classe, IngredienteImport :
+
+class IngredienteImport < Ingrediente  # <Ingrediente significa dizer que IngredienteImport é
+    def initialize(nome, preço, sabor, origem)
+        super(nome, preço, sabor)
+        @origem = origem
+    end
+end
+
+* "<Ingrediente" significa dizer que IngredienteImport é uma subclasse de Ingrediente e por isso herda seus métodos e atributos. Ingrediente é classe pai ou superclasse de IngredienteImport.
+
+Herança e Mensagens
+
+* Porém se utilizarmos o método to_s para essa nova classe, o atributo origem não será exibido. Isso acontece pois ao executar um código em Ruby, o mesmo irá procurar na classe em que está ocorrendo a chamada do método se a mesma possui esse método. Caso não possua, a busca continua na classe pai, e assim por diante.
+
+* Em Ruby, todas as classes possuem como ancestral a classe Object, ou seja, depois de percorrer todas as classes pais possíveis, chegará o momento de consultar a classe Object procurando o método desejado. A classe Object possui mais de 35 métodos de instância, e um deles é o método "to_s", aquele mesmo que nos retornou apenas o ID do objeto a princípio.
+
+* Podemos agorar redefinir o código de "to_s" na classe IngredienteImport para suprir nossas necessidades:
+
+class IngredienteImport < Ingrediente
+    def to_s
+        super + "Importado de #@origem!" # super buscará a funcionalidade de "to_s" da classe pai
+    end
+end
+
+Objetos e Atributos
+
+* Atributos são estados de um objeto que podem ser acessados e manipulados por métodos definidos em suas classes de origem.
+
+*É possível acessar esses atributos em Ruby por meio de accessors. Esse exemplo recria o que pra algumas linguagens de programação se chama getters:
+
+class Ingrediente
+    def nome  # acessor
+        @nome
+    end
+end
+    
+    # Ou então
+    
+class Ingrediente
+    attr_reader :nome  # acessor
+end
+
+*":nome" é um "Symbol Object". Explicando, :nome poderia significar o nome da varíavel nome, enquanto apenas nome significaria o valor contido na variável nome.
+
+Atributos
+
+* É possível atribuir um valor ao atributo fora de um objeto. Para isso precisamos definir um método especial.
+
+class Ingrediente
+    def nome=(novo_nome)            # =("varíavel") é responsável pela atribuição do novo valor
+        @nome = novo_nome
+    end
+end
+
+# Ou então
+
+class Ingrediente
+    attr_writer :nome
+end
+
+ingrediente = Ingrediente.new("Catupiry", 8.00, "Salgado")
+ingrediente.nome -> "Catupiry"
+ingrediente.nome = "Bacon"
+ingrediente.nome -> "Bacon"
+
+Atributos Virtuais
+
+* É possível ainda definir atributos virtuais, ou seja, atributos que de fato não existem na classe. Para isso utilizamos métodos que cria esses atributos virtualmente. Caso queiramos saber o preço de um ingrediente em centavos apenas:
+
+class Ingrediente
+    def preço_centavos
+        @preço = (@preço * 100).to_i
+    end
+    
+    def preço_centavos=(novo_preço)
+        @preço = (novo_preço * 100).to_i
+    end
+end
+
+ingrediente = Ingrediente.new("Catupiry", 8.00, "Salgado")
+ingrediente.preço_centavos -> 800
+ingrediente.preço_centavos = 5.00
+ingrediente.preço_centavos -> 500
+ingrediente.preço -> 5.00
+
+* Com esse tipo de implementação é possível esconder do resto do mundo a forma com que sua classe foi implementada, além de tornar mudanças no código menos impactantes.
+
+Variáveis de Classe
+
+* São variáveis divididas por todos os objetos de uma classe, acessíveis pelos métodos dessas classes. Apenas uma cópia de uma varíavel de classe pode existir por classe, além de necessitarem serem inicializadas antes de sua utilização. Exemplo: @@variável_de_classe.
+
+* No nosso exemplo de pizzas, é bem provável que queiramos saber quantos ingredientes foram gastos no total, além de sabermos quantos de tipo foram utilizados para repormos o estoque. O código a seguir irá exemplificar como atingir esses 2 objetivos:
+
+Variáveis de Classe
+
+class Ingrediente
+    @@utilizado = 0
+    def initialize(nome, preço, sabor)
+        @nome = nome
+        @preço = preço
+        @sabor = sabor
+        @utilizado = 0
+    end
+    def utiliza
+        @utilizado += 1 # o mesmo que @utilizado = @utilizado + 1
+        @@utilizado += 1
+        "Esse ingrediente foi utilizado #@utilizado veze(s), de um total de #@@utilizado ingrediente(s) utilizado(s)."
+    end
+end
+
+i1 = Ingrediente.new("Doce de Leite", 3.30, "Doce")
+i2 = Ingrediente.new("Lombinho", 10.98, "Salgado") 
+i1.utiliza -> Esse ingrediente foi utilizado 1 veze(s), de um total de 1 ingrediente(s) utilizado(s).
+i2.utiliza -> Esse ingrediente foi utilizado 1 veze(s), de um total de 2 ingrediente(s) utilizado(s).
+i1.utiliza -> Esse ingrediente foi utilizado 2 veze(s), de um total de 3 ingrediente(s) utilizado(s).
+
+Métodos de Classe
+
+* São métodos que funcionam sem estarem ligados expressamente em algum objeto. Necessitam passar o nome da classe e um ponto antes da chamada do método
+
+* Exemplos: ingrediente = Ingrediente.new(......)
+
+            def método_de_instância     # método de instância
+            end
+            
+            def Exemplo.método_de_classe # método de classe da classe Exemplo
+            
+Métodos de Classe
+
+* Vamos construir agora um método que checa se o preço de um ingrediente subiu demais:
+
+class CatálogoPreços         
+
+    def CatálogoPreços.muito_caro(ingrediente, preço_aceitável)
+        @preço_aceitáveç = preço_aceitável
+        return ingrediente.preço > @preço_aceitável
+    end
+end
+
+i1 = Ingrediente.new("Doce de Leite", 3.30, "Doce")
+CatálogoPreço.muito_caro(i1, 3.00) -> true
+
+Outros Construtores
+
+* Nesse exemplo criaremos um construtor manualmente. A função dele será armazenar um log local de cada pizza, permitindo que esse log seja compartilhado por todos os objetos que o usam e impossibilitando a criação de mais de um log.
+
+class ConstrutorLog
+    private_class_method :new  # Torna o método "new" da classe privado
+        @@log = nil
+        def ConstrutorLog.create
+            @@log = new unless @@log
+            @@log
+        end
+end
+
+* Tornando o método "new" privado impossibilitamos qualquer um de criar um novo objeto de log utilizando o construtor convenconal. No lugar, fornecemos a possibilidade de utilizar método de classe para criar um Log.
+
+Controle de Acesso
+
+* Métodos Públicos podem ser acessados por qualquer um. Todos os métodos são públicos por padrão, exceto o método initialize, que é privado.
+
+* Métodos Protegidos podem ser acessados apenas por objetos da classe que os define ou das suas subclasses.
+
+* Métodos Privados são acessados apenas pelo objeto corrente, não sendo possível invocar o método privado de um outro objeto. O recepto é sempre self (ele mesmo).
+
+Definindo Controles de Acesso
+
+class Exemplo
+ def método1        # Público por padrão
+    #...
+ end
+ 
+ protected          # Os próximos métodos serão protegidos
+    def método2
+        #...
+    end
+    
+ private            # Os próximos métodos serão privados
+    def método3
+        #...
+    end    
+    
+ public             # Os próximos métodos serão públicos novamente
+    def método4
+        #...
+    end    
+end
+
+Definindo Controles de Acesso
+
+* É possível definir os controles de outro modo ainda:
+
+class Exemplo
+    def método1
+        #...
+    end
+    #... método2, método3, método4...
+    
+    public :método1, método4
+    protected :método2
+    private :método3
+end
+
+Variáveis e mais Variáveis
+
+* Uma varíavel possui uma referência a um objeto.
+
+* Exemplo: pessoa1 = "João"
+           pessoa2 = pessoa1
+           
+           pessoa1 = "Maria"
+           
+           pessoa1 -> "Maria"
+           pessoa2 -> "Maria"
+           
+* Isso ocorre porque não foi criado um novo objeto em "pessoa2 = pessoa1", apenas foi passada a referência ao objeto "pessoa1" para "pessoa2".
+
+Variáveis e mais Variáveis
+
+* Caso seja nossa vontade criar um novo objeto, podemos utilizar o método "dup", que cria um novo objeto String com o mesmo conteudo.
+
+* Exemplo: pessoa1 = "João"
+           pessoa2 = pessoa1.dup
+           
+           pessoa1 = "Maria"
+           
+           pessoa1 -> "Maria"
+           pessoa2 -> "Maria"
+           
+Variáveis e mais Variáveis
+
+* É possível ainda congelar um objeto impedindo que o mesmo seja alteado:
+
+           pessoa1 = "João"
+           pessoa2 = pessoa1
+           
+           pessoa1.freeze"
+           pessoa2 = "zzzz"
+                     
+* Esse código irá gerar um erro "can't modify frozen string (TypeError)"   

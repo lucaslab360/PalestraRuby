@@ -1,0 +1,260 @@
+Ruby: A linguagem 
+
+* Criada em 1995 por Yukihiro "Matz" Matsumoto.
+
+* Linguagem de programação orientada a objetos.
+
+* Tudo em Ruby é um objeto, inclusive o resultado da manipulação desses objetos.
+
+* Matz queria que fosse uma linguagem mais poderosa que Pearl e mais orientada a objetos que Python.
+
+* Atualmente é a 12 linguagem de programação mais popular do mundo segundo o Índice Tiobe.
+
+Orientada a Objetos
+
+* Ao codificar, geralmente se procura elementos do mundo real para ajudar na modelagem do código.
+
+* Durante esse processo são descobertas categorias que necessitam estar presentes no código.
+
+* Por exemplo, no modelo do código "Pizza" necessitamos identificar seus ingredientes. Sendo assim a categoria "ingredientes" deve figurar em algum momento do código. Isso é um objeto.
+
+* Em Ruby é criada uma classe pra representar cada um desses objetos, sendo classe uma combinação entre estdado (nome do ingrediente por exemplo) e métodos que utilizam esse estado (um método para preparar a pizza seria um bom exemplo)
+
+Orientada a Objetos
+
+* Com as classes identificadas é necessário agora criar suas diversas instâncias, ou seja, objetos.
+
+* Bacon, calabresa e catupiry são instâncias de ingredientes.
+
+* Ruby cria objetos utilizando um construtor:
+
+* ingrediente1 = Ingrediente.new("Bacon")
+
+* Cada objeto tem um identificador único e é possível fazer com que cada objeto possua variáveis de instância que armazenem alguma informação sobre o objeto. No exemplo anterior, Ingrediente provavelmente possui uma variável "nome", que em ingrediente1 possui o valor "Bacon".
+
+Métodos
+
+* Toda classe pode possuir métodos. Cada método de instância tem acesso a todas as informações da instãncia de um objeto.
+
+* Métodos são invocados mandando uma mensagem para o objeto.
+
+* Exemplos: "Olá".index(l) = 1
+            "bom dia".length = 7
+            pizza.montar(ingrediente1) = "Montando a pizza com: Bacon"
+            
+* pizza -> receptor
+  montar -> método a ser invocado
+  (ingrediente1) -> parâmetro utilizado pelo método para sua ação.
+  
+Ruby, Ruby, Ruby
+
+* Exemplo de código:
+
+    def montar(ingrediente)
+      resultado = "Montando a pizza com: " + ingrediente
+      return result
+    end
+    
+    # Comentários vem logo após "#"
+    puts montar("Catupiry")
+    
+* Para definir um método basta utilizar "def" e "end".
+
+* Método pega uma string "ingrediente" e monta a pizza com essa string. Puts "imprime na tela" o resultado.
+
+Ruby, Ruby, Ruby
+
+* Em Ruby não é necessário declarar o tipo de uma variável como ocorre em outras linguagems, como por exemplo, int número ou String texto.
+
+* Para strings Ruby aceita tanto texto = 'palavras' quanto texto = "PALAVRAS". Na primeira opção ocorre um processamento menor do que na segunda, pois a segunda suporta, dentre outras coisas:
+
+* Quebra de linhas com "\n"
+
+* Interpolação de expressão com #{expressão}. Voltando no exemplo da pizza:
+
+"Montando a pizza com: "+ ingrediente = "Montando a pizza com: #{ingrediente}"
+
+
+Pizza parte 2
+
+* Agora que sabemos mais sobre Ruby vamos refazer o exemplo inicial. Mas antes, em Ruby, o valor retornado por um método é a útlima expressão avaliada pelo método. Então esse código:
+
+    def montar(ingrediente)
+      "Montando a pizza com: #{ingrediente}"
+    end
+    
+    # Comentários vem logo após "#"
+    puts montar('Catupiry')
+    
+Funciona da mesma forma que o primeiro código apresentado. Ou seja, uma pizza de Catupiry será montada.
+
+Convenções
+
+* Variáveos locais, parâmetros de métodos e nomes de métodos devem começar com letra minúscula ou underscore (_).
+
+* Variável global = $variável_global
+
+* Variável de instância = @variável_de_instância
+
+* Variável de classe = @@variável_de_classe
+
+* Nomes de Classe, Nomes de Módulos e CONSTANTES começam com letra maiúscula, sendo as contantes compostas por apenas maiúsculas geralmente.
+
+Arrays e Hashes
+
+* Coleções de dados indexadas.
+
+* Arrays suportam apenas inteiros como chave. Hashes suportam qualquer tipo de objeto.
+
+* Índices de arrays começam sempre no 0.
+
+* Exemplo: a = [ 1, 'carro', 3.2212, 'AaAaAa' ] # array com 4 elementos
+           a[1] -> carro # acessa o elemento 1 do array a
+           a[2] = nil # elemento 2 do array agora vale nil
+           
+* Em Ruby, nil (nulo em outras linguagens) é um OBJETO que sigfnica "não objeto", ou seja, é utilizado para representar o nada, literalmente.
+
+Arrays
+
+* Ruby possui um atalho para fácil criação de arrays de palavras, o que é muito útil quando se precisa criar arrays com inúmeros elementos, poupando o trabalho de colocar sempre '', "" e vírgulas.
+
+* Exemplo: a = [ '1', '2', '3', '4', '5', '6', '7', '8', '9.9', '10' ]
+           a[0] -> 1
+           
+           # A seguir o atalho utilizando %w 
+           
+           a = %w{ 1 2 3 4 5 6 7 8 9.9 10 }
+           a[0] -> 1
+           
+Hashes
+
+* Hashes utilizam 2 entradas: uma chave e o conteudo dessa chave
+
+* Exemplo: exemplo_hash = {
+            1 => "Bacon",
+            'casa' => "lar",
+            '1-1' => 3
+            }
+            
+* No exemplo, a chave se encontra antes da '=>', com o conteudo vindo logo em seguida. Cada chave deve ser única.
+
+* Para acessar um elemento do hash basta fazer como em um array: exemplo_hash['casa'] => "lar"
+
+Hashes
+
+* Exemplo: exemplo_hash['outono'] -> nil
+
+* Um hash retornará sempre nil para uma chave que ele não contenha. Porém é possível determinar um valor padrão ao criar um hash.
+
+* Exemplo:  calendario = Hash.new('dia útil')
+            calendario['25 de Dezembro'] -> 'dia útil'
+            calendario['25 de Dezembro'] = 'feriado'
+            calendario['25 de Dezembro'] -> 'feriado'
+            
+Estruturas de Controle
+
+* if (variavel == 0)
+    puts variavel
+  elsif (variavel == 1)              # Em Ruby se usa elsif em vez de else if
+    puts variavel
+  else
+    puts "Não é 0 nem 1"
+  end                                # Em Ruby, "end" delimita o fim do corpo de uma ação
+  
+* Ruby também possui outras coisas interessantes!
+
+*Exemplo: segundos = 60
+          while segundos != 0
+            segundos = segundos - 1
+          end
+          
+          # é a mesma coisa que
+          
+          segundos = 60
+          segundos = segundos - 1 while segundos != 0
+          
+Expressões Regulares
+
+* Uma expressão regular é um jeito simples de especificar um padrão de caracteres a serem seguidos por uma string.
+
+* Em ruby uma expressão regular é criada entre dois "/", e como tudo em Ruby, também é um objeto.
+
+* Exemplo: /Carro|Moto/, que significa dizer ou carro ou moto.
+
+* É possível assimilar um grupo de caracteres com um padrão. Por exemplo, \s (espaço, nova linha, etc), \d (responsável por qualquer dígito), . (assimila praticamente todos os caracteres).
+
+* Exemplos:   /\d\d:\d\d:\d\d/  # expressão para horário, como 12:53:27
+              /Carro *Moto/     # expressão para Carro, zero ou mais espaços, Moto
+              
+* Utilizando o operador =~ é possível combinar uma string com uma expressão regular
+
+* Exemplo: if horario =~ /\d\d:\d\d:\d\d/
+            puts "O relógio marca: #{horario}
+           end
+         
+Blocos e Iteradores
+
+* Ruby permite a utilização de blocos para implementer chamadas recursivas, passar pedaços de código e implementar iteradores.
+
+* Exemplo : { puts "Oi Mundo" } # isso é um bloco
+
+            do                  #
+             puts 'Oi Mundo'    # isso também
+            end                 #
+            
+* É possível associar um bloco a uma chamada de método: chamada_método { puts "Oi" }
+
+* Se o método possuir parâmetros eles aparecem antes do bloco: chamada_método("Mundo") { puts "Oi" }
+
+Blocos e Iteradores
+
+* Um método pode invocar um bloco associado uma ou muitas vezes utilizando o comando "yield".
+
+* Exemplo: def faz_pizza
+            puts "Preparando a massa"
+            yield
+            yield
+            puts "Pizza pronta!"
+           end
+           
+           bloco { puts "Adicionando ingrediente" }
+           
+        # Resultado da chamada do método faz_pizza
+        
+        Preparando a massa
+        Adicionando ingrediente
+        Adicionando ingrediente
+        Pizza pronta!
+        
+Blocos e Iteradores
+
+* Blocos de código são utilizados em Ruby para a criação de Iteradores. 
+
+* Iteradores são métodos que retornam elementos sucessivos de uma determinada coleção, como por exemplo, arrays.
+
+* Exemplo: ingredientes = %w { bacon tomate catupiry } # cria um array
+           ingredientes.each {|ingrediente| puts ingrediente } # iteração
+           
+           # Resultado da iteração
+           
+           bacon
+           tomate
+           catupiry
+         
+Entrada e Saída
+
+* puts = imprime os argumentos adicionando uma nova linha a cada comando
+  print = igual puts, porém sem a nova linhas
+  printf = semelhante a mesma função em C ou Perl, imprime argumentos sob um formato de string.
+  
+  Exemplo: printf("Número: %5.2f, \nString: %s\n", 1.23, "olá")
+  -> Número: 1.23,
+     String: olá
+     
+* Para ler entradas para um programa o método mais tradicional é "gets", que retorna a próxima linha da entrada do programa.
+
+* Exemplo: linha = gets
+           print linha
+--------------------------------------------------------------------------------------------------------
+
+         

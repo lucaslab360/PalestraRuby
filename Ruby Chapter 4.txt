@@ -1,0 +1,57 @@
+Containers - Array (Vetor)
+ 
+* A classe Array armazena uma coleção de referências a objetos. Cada um desses objetos referenciados ocupa uma posição nesse vetor.
+
+* Exemplo: vetor = [ 3.2, 'oi', 10 ]
+           vetor.class -> Array
+           vetor.length -> 3
+           vetor[0] -> 3.2      # índice começa em 0
+           
+           # Ou então
+           
+           vetor = Array.new
+           vetor = [ 3.2, 'oi', 10 ]
+           # continua igual exemplo anterior...
+           
+Array (Vetor)
+
+* Arrays são indexados utilizando o operador []. Como a maioria dos operadores em Ruby, [] é um método também, que pode até ser sobrescrito em subclasses.
+
+* Um Array retorna "nil" caso não exista nada na possição desejada. É possível ainda acessar seus valores começando pelo fim. 
+
+* Exemplo: vetor = [ 1, 3 ]
+           vetor[-1] -> 3
+           
+* É possível ainda indexar um vetor com um par de números [ start, count ].
+
+* Exemplo: vetor = [ 1, 3, 5, 7 ]
+           vetor[1, 3] -> [3, 5, 7]
+           vetor[3, 1] -> [7]
+           vetor[-2,1] -> [5]
+           
+Array (Vetor)
+
+* Utilizando uma determinada extensão é possível acessar o vetor de formas diferentes. É preciso escolher o tamanho da extensão, determinado por 2 números, separados por 2 ou 3 ".". Dois "," incluem o último número na extensão, enquanto que três "." não incluem.
+
+* Exemplo: vetor = [ 1, 3, 5, 7 ]
+           vetor[1..2] -> [3, 5]
+           vetor[1...2] -> [3]
+           vetor[-4...-1] ->[1, 3, 5]
+           
+* Graças ao operador "[]=", é possível incluir elementos em um Array. Qualquer "buraco" que acabar aparecendo nas inserções será preenchido com um "nil".
+
+*Exemplo:  vetor = [ 1, 3, 5, 7 ]       
+           vetor[-1] = "oi"  ->  [1, 3, 5, "oi"]
+           vetor[5] = 10  ->   [1, 3, 5, "oi", nil, 10]
+           
+           # utlizando os números [start, length] é possível inserir elementos também
+           # se a length for 0 o que estiver após o "=" é inserido no array
+           # se não a etensão inteira é substituída
+           vetor[4..5] = 99, 98  ->  [1, 3, 5, "oi", 99, 98]
+           vetor[1, 1] = [ 0, 1, 2 ]  ->  [1, 0, 1, 2, 5, "oi", 99, 98]
+           vetor[0..4] = []  ->  ["oi", 99, 98]
+           
+Containers - Hash    
+
+*       
+           
